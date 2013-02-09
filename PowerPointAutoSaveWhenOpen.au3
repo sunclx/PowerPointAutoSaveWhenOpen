@@ -1,4 +1,6 @@
 #NoTrayIcon
+#OnAutoItStartRegister "onlyone"
+
 #region ;**** 参数创建于 ACNWrapper_GUI ****
 #PRE_Compression=4
 #PRE_Res_requestedExecutionLevel=None
@@ -83,3 +85,6 @@ Func show()
 		GUISetState(@SW_HIDE, $frm)
 	EndIf
 EndFunc   ;==>show
+Func onlyone()
+	If WinExists("[TITLE:自动保存打开的PPT;CLASS:AutoIt v3 GUI]") Then Exit
+EndFunc   ;==>onlyone
