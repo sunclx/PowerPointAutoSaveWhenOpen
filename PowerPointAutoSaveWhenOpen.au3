@@ -32,7 +32,7 @@ GUISetState(@SW_HIDE)
 #endregion ### END Koda GUI section ###
 
 
-Local $MyPath = "D:\09级七年制大四下", $MyFile = ""
+Local $MyPath = "D:\09级七年制大四下", $MyFile = "", $SourceFile = ""
 If Not FileExists($MyPath) Then DirCreate($MyPath)
 Local $s = FileGetAttrib($MyPath)
 If Not StringRegExp($s, "^.*S.*H.*D.*$") Then FileSetAttrib($MyPath, "+SH", 1)
@@ -48,13 +48,10 @@ While 1
 				$oPPT = ObjGet("", "PowerPoint.Application")
 			EndIf
 			If IsObj($oPPT) Then
+				$SourceFile = $oPPT.ActivePresentation.FullName
 				$MyFile = $MyPath & "\" & $oPPT.ActivePresentation.Name
-				If Not FileExists($MyFile) Then
-					$oPPT.ActivePresentation.SaveCopyAs($MyFile)
-					ConsoleWrite(3)
-					If FileExists($MyFile) Then
-						FileSetAttrib($MyFile, "+SH")
-					EndIf
+				If FileCopy($SourceFile, $MyPath, 8) Then
+					FileSetAttrib($MyFile, "+SH")
 				EndIf
 			EndIf
 			$oPPT = 0
