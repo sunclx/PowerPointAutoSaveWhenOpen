@@ -43,7 +43,6 @@ HotKeySet("^!p", "show")
 While 1
 	If WinExists("[TITLE:- PowerPoint;CLASS:PPTFrameClass]") Then
 		If WinActive("[CLASS:PPTFrameClass]", "×´Ì¬À¸") Then
-			ConsoleWrite(1)
 			If Not IsObj($oPPT) Then
 				$oPPT = ObjGet("", "PowerPoint.Application")
 			EndIf
