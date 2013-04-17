@@ -12,6 +12,7 @@
 #include <GUIListBox.au3>
 #include <WindowsConstants.au3>
 #include <File.au3>
+#include <String.au3>
 Opt("WinTitleMatchMode", 2)
 #region ### START Koda GUI section ### Form=
 $frm = GUICreate("自动保存打开的PPT", 265, 272, 192, 124)
@@ -48,8 +49,27 @@ While 1
 			EndIf
 			If IsObj($oPPT) Then
 				$SourceFile = $oPPT.ActivePresentation.FullName
-				$MyFile = $MyPath & "\" & $oPPT.ActivePresentation.Name
-				If FileCopy($SourceFile, $MyPath, 8) Then
+				$course = '其他'
+				$f = FileOpen('dates.txt', 0)
+				While 1
+					$line = FileReadLine($f)
+					If @error = -1 Then ExitLoop
+					$array = StringSplit($line, ",")
+					$date = @YEAR * 10000 + @MON * 100 + @MDAY
+					$i = StringInStr($array[2], String(order()))
+					If $date = Int($array[1]) And $i Then
+						$course = $array[3]
+						ExitLoop
+					ElseIf $date < Int($array[1]) Then
+						ExitLoop
+					EndIf
+				WEnd
+				FileClose($f)
+				Sleep(10000)
+				$MyPath1 = $MyPath & "\" & $course
+				If Not FileExists($MyPath1) Then DirCreate($MyPath1)
+				$MyFile = $MyPath1 & "\" & $oPPT.ActivePresentation.Name
+				If FileCopy($SourceFile, $MyPath1, 8) Then
 					FileSetAttrib($MyFile, "+SH")
 				EndIf
 			EndIf
@@ -84,3 +104,28 @@ EndFunc   ;==>show
 Func onlyone()
 	If WinExists("[TITLE:自动保存打开的PPT;CLASS:AutoIt v3 GUI]") Then Exit
 EndFunc   ;==>onlyone
+Func order()
+	$time = @HOUR * 60 + @MIN
+	Switch $time
+		Case 8 * 60 To 8 * 60 + 40
+			Return 1
+		Case 8 * 60 + 50 To 8 * 60 + 90
+			Return 2
+		Case 8 * 60 + 100 To 8 * 60 + 140
+			Return 3
+		Case 8 * 60 + 150 To 8 * 60 + 190
+			Return 4
+		Case 8 * 60 + 200 To 8 * 60 + 240
+			Return 5
+		Case 14 * 60 To 14 * 60 + 40
+			Return 6
+		Case 14 * 60 + 50 To 14 * 60 + 90
+			Return 7
+		Case 14 * 60 + 100 To 14 * 60 + 140
+			Return 8
+		Case 14 * 60 + 150 To 14 * 60 + 190
+			Return 9
+		Case Else
+			Return 0
+	EndSwitch
+EndFunc   ;==>order
